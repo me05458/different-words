@@ -1,7 +1,21 @@
 #include "String.h"
+#include "List.h"
 String::String(List<char> word)
 {
     m_word = word;
+}
+
+String::String(const char* word, int size)
+{
+    m_word = List<char>();
+    if(word == nullptr)
+    {
+        return;
+    }
+    for(int i = 0; i<size; i++)
+    {
+        m_word.add(word[i]);
+    }
 }
 
 String::~String()
@@ -25,27 +39,27 @@ bool String::operator==(const String &s)
     return true;
 }
 
-int size()
+int String::size() const
 {
     return m_word.size();
 }
-bool isEmpty()
+bool String::isEmpty() const
 {
     return m_word.isEmpty();
 }
-char charAt(int i)
+char String::charAt(int i) const
 {
     return m_word.get(i);
 }
-void addAt(char c, int i)
+void String::addAt(char c, int i)
 {
     m_word.add(c, i);
 }
-void append(char c)
+void String::append(char c)
 {
     m_word.add(c);
 }
-void set(List<char> word)
+void String::set(List<char> word)
 {
     m_word = word;
 }
@@ -53,94 +67,94 @@ void set(List<char> word)
 
 bool String::operator<(const String &s)
 {
-    if(s == this)
+    if(this == &s)
     {
         return false;
     }
-    int new_size = this.size;
-    if(this.size > s.size)
+    int new_size = this->size();
+    if(this->size() > s.size())
     {
-        new_size = s.size;
+        new_size = s.size();
     }
     int i = 0;
-    while(i<new_size && this.charAt(i) == s.charAt(i))
+    while(i<new_size && this->charAt(i) == s.charAt(i))
     {
         i++;
     }
     if(i == new_size)
     {
-        return new_size != s.size;
+        return new_size != s.size();
     }
-    return this.charAt(i) < s.charAt(i);
+    return this->charAt(i) < s.charAt(i);
 
 }
 bool String::operator>(const String &s)
 {
-    if(s == this)
+    if(this == &s)
     {
         return false;
     }
-    int new_size = this.size;
-    if(this.size > s.size)
+    int new_size = this->size();
+    if(this->size() > s.size())
     {
-        new_size = s.size;
+        new_size = s.size();
     }
     int i = 0;
-    while(i<new_size && this.charAt(i) == s.charAt(i))
+    while(i<new_size && this->charAt(i) == s.charAt(i))
     {
         i++;
     }
     if(i == new_size)
     {
-        return new_size == s.size;
+        return new_size == s.size();
     }
-    return this.charAt(i) > s.charAt(i);
+    return this->charAt(i) > s.charAt(i);
 }
 bool String::operator<=(const String &s)
 {
-    if(s == this)
+    if(this == &s)
     {
         return true;
     }
-    int new_size = this.size;
-    if(this.size > s.size)
+    int new_size = this->size();
+    if(this->size() > s.size())
     {
-        new_size = s.size;
+        new_size = s.size();
     }
     int i = 0;
-    while(i<new_size && this.charAt(i) == s.charAt(i))
+    while(i<new_size && this->charAt(i) == s.charAt(i))
     {
         i++;
     }
     if(i == new_size)
     {
-        return new_size != s.size;
+        return new_size != s.size();
     }
-    return this.charAt(i) <= s.charAt(i);
+    return this->charAt(i) <= s.charAt(i);
 }
 bool String::operator>=(const String &s)
 {
-    if(s == this)
+    if(this == &s)
     {
         return true;
     }
-    int new_size = this.size;
-    if(this.size > s.size)
+    int new_size = this->size();
+    if(this->size() > s.size())
     {
-        new_size = s.size;
+        new_size = s.size();
     }
     int i = 0;
-    while(i<new_size && this.charAt(i) == s.charAt(i))
+    while(i<new_size && this->charAt(i) == s.charAt(i))
     {
         i++;
     }
     if(i == new_size)
     {
-        return new_size == s.size;
+        return new_size == s.size();
     }
-    return this.charAt(i) >= s.charAt(i);
+    return this->charAt(i) >= s.charAt(i);
 }
 bool String::operator!=(const String &s)
 {
-    return !(this == s);
+    return !(*this == s);
 }

@@ -1,3 +1,5 @@
+#ifndef LIST_H
+#define LIST_H
 template <typename T>
 class List { //array list, specifically
 public:
@@ -6,9 +8,9 @@ public:
     int add(T item, int spot);
     int add(T item);
     T remove(int spot);
-    T get(int spot);
-    bool isEmpty();
-    int size();
+    T get(int spot) const;
+    bool isEmpty() const;
+    int size() const;
     void clear();
 
 private:
@@ -18,3 +20,5 @@ private:
     int m_maxSize;
     void resize();
 };
+
+#endif
