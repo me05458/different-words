@@ -1,13 +1,12 @@
-#include "String.h"
-#include "List.h"
-String::String(List<char> word)
+#include "w_String.h"
+#include "w_List.h"
+w_String::w_String(w_List<char> word)
 {
     m_word = word;
 }
 
-String::String(const char* word, int size)
+w_String::w_String(const char* word, int size)
 {
-    m_word = List<char>();
     if(word == nullptr)
     {
         return;
@@ -18,12 +17,11 @@ String::String(const char* word, int size)
     }
 }
 
-String::~String()
+w_String::~w_String()
 {
-    m_word.~List();
 }
 
-bool String::operator==(const String &s)
+bool w_String::operator==(const w_String &s)
 {
     if(m_word.size() != s.size())
     {
@@ -31,7 +29,7 @@ bool String::operator==(const String &s)
     }
     for(int i = 0; i<m_word.size(); i++)
     {
-        if(m_word.get(i) != s.charAt(i))
+        if(*m_word.get(i) != s.charAt(i))
         {
             return false;
         }
@@ -39,33 +37,33 @@ bool String::operator==(const String &s)
     return true;
 }
 
-int String::size() const
+int w_String::size() const
 {
     return m_word.size();
 }
-bool String::isEmpty() const
+bool w_String::isEmpty() const
 {
     return m_word.isEmpty();
 }
-char String::charAt(int i) const
+char w_String::charAt(int i) const
 {
-    return m_word.get(i);
+    return *m_word.get(i);
 }
-void String::addAt(char c, int i)
+void w_String::addAt(char c, int i)
 {
     m_word.add(c, i);
 }
-void String::append(char c)
+void w_String::append(char c)
 {
     m_word.add(c);
 }
-void String::set(List<char> word)
+void w_String::set(w_List<char> word)
 {
     m_word = word;
 }
 
 
-bool String::operator<(const String &s)
+bool w_String::operator<(const w_String &s)
 {
     if(this == &s)
     {
@@ -88,7 +86,7 @@ bool String::operator<(const String &s)
     return this->charAt(i) < s.charAt(i);
 
 }
-bool String::operator>(const String &s)
+bool w_String::operator>(const w_String &s)
 {
     if(this == &s)
     {
@@ -110,7 +108,7 @@ bool String::operator>(const String &s)
     }
     return this->charAt(i) > s.charAt(i);
 }
-bool String::operator<=(const String &s)
+bool w_String::operator<=(const w_String &s)
 {
     if(this == &s)
     {
@@ -132,7 +130,7 @@ bool String::operator<=(const String &s)
     }
     return this->charAt(i) <= s.charAt(i);
 }
-bool String::operator>=(const String &s)
+bool w_String::operator>=(const w_String &s)
 {
     if(this == &s)
     {
@@ -154,7 +152,7 @@ bool String::operator>=(const String &s)
     }
     return this->charAt(i) >= s.charAt(i);
 }
-bool String::operator!=(const String &s)
+bool w_String::operator!=(const w_String &s)
 {
     return !(*this == s);
 }
