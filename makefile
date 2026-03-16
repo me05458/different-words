@@ -1,7 +1,7 @@
 LINK_TARGET = run
 OBJS = \
-       List.o\
-       String.o\
+       w_List.o\
+       w_String.o\
        wordCounter.o\
 
 REBUILDABLES = $(OBJS) $(LINK_TARGET)
@@ -9,11 +9,12 @@ all: $(LINK_TARGET)
 	@echo done
 
 $(LINK_TARGET): $(OBJS)
-	#g++ -o $(LINK_TARGET) $(OBJS)
-	g++ -o run List.cpp String.cpp wordCounter.cpp
+	g++ -o $(LINK_TARGET) $(OBJS)
 
+%.o : %.c
+	gcc -o $@ -c $<
 
-String.cpp: List.h
+w_String.cpp: w_List.h
 
 clean:
 	rm -f $(REBUILDABLES)
