@@ -1,11 +1,13 @@
 #ifndef w_LIST_H
 #define w_LIST_H
 #include <cstddef>
+#include <cstdlib>
 
 template <typename T>
 class w_List { //array list, specifically
 public:
     w_List(int arraySize = 10, int maxSize=1000);
+    w_List(const w_List<T> &list);
     ~w_List();
     int add(int spot, T item);
     int add(T item);
@@ -14,18 +16,37 @@ public:
     bool isEmpty() const;
     int size() const;
     void clear();
+    w_List<T>& operator=(const w_List<T> &list);
+
+protected:
+    int m_arrSize;
+    int m_maxSize;
+    int m_addSize;
 
 private:
     T *m_arr;
     int m_size;
-    int m_arrSize;
-    int m_maxSize;
     int resize();
 };
 
 template <typename T>
+w_List<T>::w_List(const w_List<T> &list)
+{
+    m_arrSize = list.m_arrSize;
+    m_addSize = list.m_addSize;
+    m_maxSize = list.m_maxSize;
+    m_arr = new T[m_arrSize];
+    m_size = list.size();
+    for(int i = 0; i<m_size; i++)
+    {
+        m_arr[i] = *list.get(i);
+    }
+}
+
+template <typename T>
 w_List<T>::w_List(int arraySize, int maxSize)
 {
+    m_addSize = arraySize;
     m_arrSize = arraySize;
     m_maxSize = maxSize;
     m_size = 0;
@@ -39,9 +60,9 @@ w_List<T>::~w_List()
 template <typename T>
 int w_List<T>::resize()
 {
-    if(m_arrSize+10 <= m_maxSize)
+    if(m_arrSize+m_addSize <= m_maxSize)
     {
-        m_arrSize += 10;
+        m_arrSize += m_addSize;
         T *a = new T[m_arrSize];
         if(a == nullptr)
         {
@@ -60,6 +81,23 @@ int w_List<T>::resize()
         return 1;
     }
 }
+
+template <typename T>
+w_List<T>& w_List<T>::operator=(const w_List<T> &list)
+{
+    free(m_arr);
+    m_arrSize = list.m_arrSize;
+    m_maxSize = list.m_maxSize;
+    m_addSize = list.m_addSize;
+    m_arr = new T[m_arrSize];
+    m_size = list.size();
+    for(int i = 0; i<m_size; i++)
+    {
+        m_arr[i] = *list.get(i);
+    }
+    return *this;
+}
+
 template <typename T>
 int w_List<T>::add(int spot, T item)
 {
