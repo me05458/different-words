@@ -9,7 +9,7 @@ using namespace std;
 int main() {
    // w_Test::testString();
     w_Test::testList();
-
+    std::cout<<"hi"<<std::endl;
 
 
 

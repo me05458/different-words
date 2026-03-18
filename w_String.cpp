@@ -1,8 +1,10 @@
 #include "w_String.h"
+#include <cstdio>
 #include "w_List.h"
-w_String::w_String(w_List<char> word)
+w_String::w_String(w_List<char>& word)
+: m_word(word)
 {
-    m_word = word;
+   // m_word = word;
 }
 
 w_String::w_String(const char* word, int size)
@@ -19,6 +21,14 @@ w_String::w_String(const char* word, int size)
 
 w_String::~w_String()
 {
+}
+
+void w_String::printString()
+{
+    for(int i = 0; i<this->size(); i++)
+    {
+        printf("%c",this->charAt(i));
+    }
 }
 
 bool w_String::operator==(const w_String &s)
@@ -47,17 +57,26 @@ bool w_String::isEmpty() const
 }
 char w_String::charAt(int i) const
 {
+    if(m_word.get(i) == nullptr)
+    {
+        return NULL;
+    }
     return *m_word.get(i);
 }
-void w_String::addAt(char c, int i)
+bool w_String::addAt(char c, int i)
 {
-    m_word.add(c, i);
+    int a = m_word.add(i, c);
+    if(a == -1)
+    {
+        return false;
+    }
+    return true;
 }
 void w_String::append(char c)
 {
     m_word.add(c);
 }
-void w_String::set(w_List<char> word)
+void w_String::set(w_List<char> &word)
 {
     m_word = word;
 }
@@ -65,7 +84,7 @@ void w_String::set(w_List<char> word)
 
 bool w_String::operator<(const w_String &s)
 {
-    if(this == &s)
+    if(*this == s)
     {
         return false;
     }
@@ -88,7 +107,7 @@ bool w_String::operator<(const w_String &s)
 }
 bool w_String::operator>(const w_String &s)
 {
-    if(this == &s)
+    if(*this == s)
     {
         return false;
     }
@@ -110,47 +129,19 @@ bool w_String::operator>(const w_String &s)
 }
 bool w_String::operator<=(const w_String &s)
 {
-    if(this == &s)
+    if(*this == s || *this < s)
     {
         return true;
     }
-    int new_size = this->size();
-    if(this->size() > s.size())
-    {
-        new_size = s.size();
-    }
-    int i = 0;
-    while(i<new_size && this->charAt(i) == s.charAt(i))
-    {
-        i++;
-    }
-    if(i == new_size)
-    {
-        return new_size != s.size();
-    }
-    return this->charAt(i) <= s.charAt(i);
+    return false;
 }
 bool w_String::operator>=(const w_String &s)
 {
-    if(this == &s)
+    if(*this == s || *this > s)
     {
         return true;
     }
-    int new_size = this->size();
-    if(this->size() > s.size())
-    {
-        new_size = s.size();
-    }
-    int i = 0;
-    while(i<new_size && this->charAt(i) == s.charAt(i))
-    {
-        i++;
-    }
-    if(i == new_size)
-    {
-        return new_size == s.size();
-    }
-    return this->charAt(i) >= s.charAt(i);
+    return false;
 }
 bool w_String::operator!=(const w_String &s)
 {
