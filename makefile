@@ -4,6 +4,7 @@ OBJS = \
        w_String.o\
        wordCounter.o\
        test.o\
+       w_file.o\
 
 REBUILDABLES = $(OBJS) $(LINK_TARGET)
 all: $(LINK_TARGET)

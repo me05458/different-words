@@ -1,0 +1,17 @@
+aaa,3,1
+aaa,3,1
+aabear,4,10
+cauliflower,11,2
+cauliflower,11,2
+cauliflower,11,2
+cauliflower,11,2
+cauliflower,11,2
+cauliflower,11,2
+cauliflower,11,2
+cauliflower,11,2
+cauliflower,11,2
+cauliflower,11,2
+cauliflowecauliflower,11,2
+cauliflowecauliflower,11,2
+cauliflowecauliflower,11,2
+dog,3,1

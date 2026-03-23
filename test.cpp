@@ -1,6 +1,7 @@
 #include "w_String.h"
 #include "w_List.h"
 #include <cstdio>
+#include "w_file.h"
 #include "test.h"
 
 void w_Test::eANDs(bool empty, int size, bool want_empty, int want_size)
@@ -24,6 +25,121 @@ void w_Test::eANDs(bool empty, int size, bool want_empty, int want_size)
     }
 }
 
+void w_Test::testFile2()
+{
+    //testing file:
+    /*
+     * apple,5,5
+     * bear,4,9
+     * cauliflower,11,1
+     * dog,3,11``
+     *
+     *
+     *
+     */
+    printf("TESTING FILE 2\n");
+    printf("------\n------\n");
+    w_String name("data.txt",8);
+    w_String insertstr("author",6);
+    w_String updatestr("bear",4);
+    w_String updatestr2("cauliflower",11);
+    w_File f(name);
+     //doesn't work
+    //printf("%s\n",(char*)insertstr);
+    //int q = f.insert(10,insertstr,6,7);
+    //printf("q: %d\n",q);
+    //seg faults
+    printf("update?\n");
+    f.update(10,updatestr,4,10);
+    printf("update!!\n");
+    // seg faults
+    f.update(20,updatestr2,11,2);
+
+    int q = f.update(200,updatestr2,11,2);
+    printf("q: %d\n",q);
+
+    //yay this works !!
+    w_String getWord("meh",3);
+    int getsize = 0;
+    int getdup = 0;
+    long int ten = 10;
+    int a = f.get(&ten,&getWord,&getsize,&getdup);
+    getWord.printString();
+    printf("\nsize: %d, duplicate: %d, counter: %d, a: %d\n",getsize,getdup,ten,a);
+
+    ten = 90;
+    a = f.get(&ten,&getWord,&getsize,&getdup);
+    printf("a: %d\n",getsize,getdup,ten,a);
+
+    w_String startword("aaa",3);
+    f.insert(0,startword,3,1);
+
+    w_String name2("data2.txt",9);
+    w_File f2(name2);
+    w_String emptyword("hello",5);
+    int l = f2.insert(0,emptyword,5,1);
+    printf("l: %d\n",l);
+
+}
+
+void w_Test::testFile()
+{
+
+    //testing file:
+    /*
+     * ffluffy,7,8
+     * fluffy,6,7
+     * fluffyyy,8,9
+     *
+     *
+     *
+     */
+    printf("TESTING FILE:\n");
+    printf("------\n------\n");
+    w_String name("data.txt",8);
+    w_String w("fluffy",6);
+    printf("Made it past string inits\n");
+    w_File f(name);
+    printf("Made it past file open\n");
+    long int thing;
+    char buff[100];
+
+    bool tmp = f.findWord(w, &thing);
+    printf("Made it past findword\n");
+    printf("%b %s %d\n", tmp, (char*)w, thing);
+    if(tmp != true || thing != 12)
+    {
+        printf("\033[1;31mFALIURE 50\033[0m\n");
+    }
+    printf("tmp: %d, thing: %d\n",tmp,thing);
+
+    buff[0] = 'c';
+    buff[1] = 'a';
+    buff[2] = 't';
+    buff[3] = 0;
+    w.set(buff);
+
+    tmp = f.findWord(w, &thing);
+    if(tmp == true)
+    {
+        printf("\033[1;31mFALIURE 62\033[0m\n");
+    }
+    printf("tmp: %d, thing: %d\n",tmp,thing);
+
+    buff[0] = 'f';
+    buff[1] = 'f';
+    buff[2] = 'y';
+    buff[3] = 0;
+    w.set(buff);
+
+    tmp = f.findWord(w, &thing);
+    if(tmp == true)
+    {
+        printf("\033[1;31mFALIURE 62\033[0m\n");
+    }
+    printf("tmp: %d, thing: %d\n",tmp,thing);
+
+}
 
 void w_Test::testList()
 {

@@ -4,7 +4,7 @@
 w_String::w_String(w_List<char>& word)
 : m_word(word)
 {
-   // m_word = word;
+   m_word.add(0);
 }
 
 w_String::w_String(const char* word, int size)
@@ -17,6 +17,24 @@ w_String::w_String(const char* word, int size)
     {
         m_word.add(word[i]);
     }
+    m_word.add(0);
+}
+
+w_String::w_String(const char* word)
+{
+    if(word == nullptr)
+    {
+        return;
+    }
+    char tmp = word[0];
+    int i = 0;
+    while(tmp != 0)
+    {
+        m_word.add(tmp);
+        i++;
+        tmp = word[i];
+    }
+    m_word.add(0);
 }
 
 w_String::~w_String()
@@ -33,13 +51,13 @@ void w_String::printString()
 
 bool w_String::operator==(const w_String &s)
 {
-    if(m_word.size() != s.size())
+    if(this->size() != s.size())
     {
         return false;
     }
     for(int i = 0; i<m_word.size(); i++)
     {
-        if(*m_word.get(i) != s.charAt(i))
+        if(charAt(i) != s.charAt(i))
         {
             return false;
         }
@@ -49,8 +67,14 @@ bool w_String::operator==(const w_String &s)
 
 int w_String::size() const
 {
-    return m_word.size();
+    return m_word.size()-1;
 }
+
+w_String::operator char*() const
+{
+    return m_word.get(0);
+}
+
 bool w_String::isEmpty() const
 {
     return m_word.isEmpty();
@@ -74,11 +98,31 @@ bool w_String::addAt(char c, int i)
 }
 void w_String::append(char c)
 {
-    m_word.add(c);
+    m_word.add(this->size(),c);
 }
 void w_String::set(w_List<char> &word)
 {
     m_word = word;
+    m_word.add(0);
+}
+
+void w_String::set(char* arr)
+{
+    if(arr == nullptr)
+    {
+        return;
+    }
+    m_word.clear();
+    char tmp = arr[0];
+    int counter = 0;
+    while(tmp != 0)
+    {
+        m_word.add(tmp);
+        counter++;
+        tmp = arr[counter];
+    }
+    m_word.add(0);
+
 }
 
 
