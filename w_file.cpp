@@ -23,50 +23,51 @@ w_File::~w_File()
 }
 bool w_File::findWord(w_String word, long int* pos)
 {
-    printf("looking for: %s\n", (char*)word);
+  //  printf("aaa- looking for: %s\n", (char*)word);
     m_file.seekp(0,m_file.beg);
     long int beg_pos = m_file.tellp();
     m_file.seekp(0,m_file.end);
     long int end_pos = m_file.tellp();
+    //printf("aaa- beg=%d, end=%d\n", beg_pos, end_pos);
 
-    //long int postmp = m_file.beg;
     long int postmp = beg_pos;
     char* buff = new char[100];
     w_String tmpword("a",1);
-    printf("postmp before get: %d\n", postmp);
+    //printf("aaa pre get\n");
     int i = get(&postmp,&tmpword,nullptr,nullptr);
+    //printf("aaa get returned %d\n", i);
     long int postmp1 = beg_pos;
-    printf("got: %d, %s\n", i, (char*)tmpword);
+    //printf("aaa- got: %d, %s, next pos=%d\n", i, (char*)tmpword, postmp);
     if(i != 0)
     {
-        printf("get error occured\n");
+        //printf("get error occured\n");
+
         return false;
     }
     while(tmpword<=word)
     {
         if(tmpword == word)
         {
-            printf("*** 1\n");
+         //   printf("*** 1\n");
             *pos = postmp1;
             return true;
         }
-        //if(postmp == m_file.end)
         if(postmp == end_pos)
         {
-            printf("*** 2\n");
-            *pos = postmp1;
+           // printf("*** 2\n");
+            *pos = postmp;
             return false;
         }
         postmp1 = postmp;
         i = get(&postmp,&tmpword,nullptr,nullptr);
-        printf("*** 3\n");
+       // printf("*** 3\n");
         if(i != 0)
         {
-            printf("get error occured\n");
+           // printf("get error occured\n");
             return false;
         }
     }
-    printf("*** 4\n");
+   // printf("*** 4\n");
     *pos = postmp1;
     return false;
 
@@ -74,19 +75,15 @@ bool w_File::findWord(w_String word, long int* pos)
 }
 int w_File::update(long int pos, w_String word, int size, int duplicate)
 {
-    printf("---update start\n");
-    printf("   %d, %s, %d, %d\n",pos, (char*)word, size, duplicate);
+  //  printf("   %d, %s, %d, %d\n",pos, (char*)word, size, duplicate);
     long int tmp = pos;
-    printf("---tmp created: %d\n",tmp);
     int i = get(&tmp, nullptr, nullptr,nullptr);
-    printf("---get done, tmp= %d\n", tmp);
     if(i != 0)
     {
         printf("get error occured\n");
         return 1;
     }
     int length = tmp-pos;
-    printf(" ---length= %d\n",length);
     char* buff = new char[100];
     sprintf(buff, ",%d,%d\n", size,duplicate);
     char tmpc = buff[0];
@@ -97,7 +94,6 @@ int w_File::update(long int pos, w_String word, int size, int duplicate)
         tmpc = buff[counter];
     }
     int entrySize = word.size()+counter;
-    printf("---size done: %d+%d=%d\n",word.size(), counter, entrySize);
     m_file.seekp(pos, m_file.beg);
     if(m_file.bad())
     {
@@ -106,37 +102,34 @@ int w_File::update(long int pos, w_String word, int size, int duplicate)
     }
     if(entrySize == length)
     {
-        printf("---size==length\n");
         m_file<<word<<','<<size<<','<<duplicate<<'\n';
-        printf("---wrote to file\n");
     }
     else if(entrySize > length)
     {
-        printf("---size!=length\n");
         shift(pos, entrySize-length);
-        printf("---shifted\n");
         m_file.seekp(pos, m_file.beg);
         m_file<<word<<','<<size<<','<<duplicate<<'\n';
-        printf("---wrote to file\n");
     }
     else
     {
         printf("Mysterious length error occured\n");
         return 3;
     }
-    printf("---end update\n");
+    m_file.flush();
     return 0;
 
 }
 int w_File::insert(long int pos, w_String word, int size, int duplicate)
 {
-    printf("insert: %d, %s, %d, %d\n",pos, (char*)word, size, duplicate);
+    //printf("aaa- insert: %d, %s, %d, %d\n",pos, (char*)word, size, duplicate);
     m_file.seekp(0,m_file.end);
     long int endpos = m_file.tellp();
-    if(pos > endpos || pos < 0)
+    //printf("aaa- endpos= %d",endpos);
+    //aaa if((pos > endpos)&&endpos!=-1 || pos < 0)
+    if((pos > endpos&&endpos!=-1)  || pos < 0)
     {
-        printf("--- pos: %d, endpos: %d || %d\n",pos, endpos, (pos<0));
-        printf("Invalid position: %d\n",pos);
+     //   printf("--- pos: %d, endpos: %d || %d\n",pos, endpos, (pos<0));
+        printf("(insert )Invalid position: %d\n",pos);
         return 1;
     }
     char* buff = new char[100];
@@ -149,7 +142,8 @@ int w_File::insert(long int pos, w_String word, int size, int duplicate)
         tmp = buff[counter];
     }
     long int entrySize = word.size()+counter; //+1;
-    printf("%d\n",entrySize);
+   // printf("%d\n",entrySize);
+    m_file.seekp(pos, m_file.beg);
     shift(pos, entrySize);
     m_file.seekp(pos, m_file.beg);
     if(m_file.bad())
@@ -158,15 +152,17 @@ int w_File::insert(long int pos, w_String word, int size, int duplicate)
         return 2;
     }
     m_file<<word<<','<<size<<','<<duplicate<<'\n';
+    m_file.flush();
     return 0;
 }
 int w_File::get(long int *pos, w_String *word, int *size, int *duplicate)
 {
+    //printf("aaa inside get: pos=%d\n", *pos);
     m_file.seekp(0,m_file.end);
     long int endpos = m_file.tellp();
-    if(*pos > endpos ||* pos < 0)
+    if((*pos > endpos&&endpos!=-1)  ||* pos < 0)
     {
-        printf("Invalid position: %d\n",*pos);
+        printf("(get)Invalid position: %d\n",*pos);
         return 1;
     }
     m_file.seekp(*pos, m_file.beg);
@@ -177,9 +173,17 @@ int w_File::get(long int *pos, w_String *word, int *size, int *duplicate)
     }
     char* buff = new char[100];
     m_file.getline(buff, 100, ',');
+
+    //aaa if(m_file.bad())
+    if(m_file.eof())
+    {
+        //printf("aaa- eof\n");
+        *pos = 0;
+        return 3;
+    }
     if(word == nullptr)
     {
-        printf("...word null\n");
+       // printf("...word null\n");
         m_file.getline(buff,100,'\n');
         *pos = m_file.tellp();
         return 0;
@@ -204,11 +208,14 @@ int w_File::shift(long int pos, long int shift)
 {
     m_file.seekp(0,m_file.end);
     long int endpos = m_file.tellp();
-    if(pos > endpos || pos < 0)
+    if((pos > endpos&&endpos!=-1) || pos < 0)
     {
-        printf("Invalid position: %d\n",pos);
+        printf("(shift)Invalid position: %d\n",pos);
         return 1;
     }
+    if(pos==endpos) //aaa: all good, no need for shifting
+        return 0;
+
     char* buff = new char[shift];
     m_file.seekp(0,m_file.end);
     if(m_file.bad())
@@ -222,17 +229,27 @@ int w_File::shift(long int pos, long int shift)
     }
 
     long int c_pos = m_file.tellp() - shift*2;
-    while(c_pos>pos)
+    int runTimes = (endpos-pos)/shift;
+    int remainderBytes = (endpos-pos)%shift;
+    for(int i = 0; i<runTimes; i++)
     {
         m_file.seekp(c_pos);
         m_file.read(buff, shift);
         m_file.write(buff, shift);
         c_pos -= shift;
     }
+
+    if(remainderBytes!=0)
+    {
+        m_file.seekp(pos);
+        m_file.read(buff,remainderBytes);
+        m_file.seekp(pos+shift);
+        m_file.write(buff,remainderBytes);
+    }
     // one more shift, this time from 'pos'
-    m_file.seekp(pos);
+   /* m_file.seekp(pos);
     m_file.read(buff, shift);
-    m_file.write(buff, shift);
+    m_file.write(buff, shift);*/
 
     delete buff;
     if(m_file.bad())

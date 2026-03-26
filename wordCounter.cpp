@@ -27,6 +27,8 @@ int main() {
 
     char a_char = 0;
     bool keepgo = true;
+    bool allgood = true;
+    bool reporttime = false;
     char* buff = new char[100];
 
     while(true)
@@ -34,16 +36,32 @@ int main() {
         whilestart:
         if(cin.peek()=='\n')
         {
-            printf("imagine help here\n");
+            printf("Type word(s) separated by spaces or any of the following commands:\n"
+            "-h help (this list)\n"
+            "-q quit\n"
+            "-l get 10 most common word lengths\n"
+            "-d get 10 most duplicated words\n"
+            );
             cin.get();
         }
         else if(cin.peek()=='-')
         {
+            if(reporttime && allgood)
+            {
+                printf("All good!\n");
+            }
+            allgood = true;
+            reporttime = false;
             cin.get();
             switch(cin.get())
             {
                 case 'h':
-                    printf("imagine useful info here\n");
+                    printf("Type word(s) separated by spaces or any of the following commands:\n"
+                        "-h help (this list)\n"
+                        "-q quit\n"
+                        "-l get 10 most common word lengths\n"
+                        "-d get 10 most duplicated words\n"
+                    );
                     break;
                 case 'q':
                     printf("need to go! bye!\n");
@@ -82,17 +100,61 @@ int main() {
                 else
                 {
                     printf("invalid word; will ignore\n");
+                    cin.ignore(100,'\n');
                     goto whilestart;
                 }
                 a_char=cin.get();
             }
-            printf("word: ");
-            entry.printString();
-            printf("\n");
-            //int length = entry.size();
-            //sprintf(buffer,"%s,%d,%d\n",entry,entry.size(),1);
-            //entry.set(buffer);
-            dataArea.insert(0,entry,entry.size(),1);
+            long int foundpos = 0;
+            int oldduplicate = -1;
+          //  printf("pre find\n");
+            bool foundWord = dataArea.findWord(entry,&foundpos);
+          //  printf("post find\n");
+            long int tmpfoundpos = foundpos;
+            if(foundWord)
+            {
+                printf("Duplicate word: ");
+                entry.printString();
+                printf("\n");
+
+                allgood = false;
+
+                int a = dataArea.get(&tmpfoundpos, &entry, &oldduplicate,&oldduplicate);
+                if(a!=0)
+                {
+                    printf("Get error occured\n");
+                    goto whilestart;
+                }
+
+                dataArea.update(foundpos,entry,entry.size(),oldduplicate+1);
+            }
+            else
+            {
+                reporttime = true;
+             //   printf("NOT duplicate word: ");
+               // entry.printString();
+                //printf("\n");
+                if(foundpos == -1)
+                {
+                    printf("wow -1\n");
+                    dataArea.insert(0,entry,entry.size(),1);
+                }
+                else
+                {
+                    dataArea.insert(foundpos,entry,entry.size(),1);
+                }
+
+            }
+
+            if(a_char == '\n')
+            {
+                if(allgood)
+                {
+                    printf("All good!\n");
+                }
+                allgood = true;
+            }
+
         }
     }
 
