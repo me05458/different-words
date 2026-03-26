@@ -12,13 +12,15 @@ using namespace std;
 
 
 int main() {
+
+    w_Test::testStats();
+    return 0;
 /*    fstream vocabulary{"data.txt", ios::in | ios::out};
     if(!vocabulary.is_open())
     {
         cout<<"File opening error occured"<<endl;
         return 0;
     }*/
-
     w_String filename("data.txt",8);
     w_File dataArea(filename);
 
@@ -93,9 +95,15 @@ int main() {
             a_char = cin.get();
             while(a_char!= ' ' && a_char!='\n')
             {
-                if(a_char>='A' && a_char<='z')
+                if(a_char>='a' && a_char<='z')
                 {
                     entry.append(a_char);
+                }
+                else if(a_char>='A' && a_char<='Z')
+                {
+                    printf("use all lowercase!\n");
+                    cin.ignore(100,'\n');
+                    goto whilestart;
                 }
                 else
                 {

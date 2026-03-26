@@ -73,6 +73,10 @@ bool w_File::findWord(w_String word, long int* pos)
 
 
 }
+bool w_File::eof()
+{
+    return m_file.eof();
+}
 int w_File::update(long int pos, w_String word, int size, int duplicate)
 {
   //  printf("   %d, %s, %d, %d\n",pos, (char*)word, size, duplicate);

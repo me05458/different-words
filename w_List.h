@@ -11,11 +11,12 @@ public:
     ~w_List();
     int add(int spot, T item);
     int add(T item);
-    T remove(int spot);
+    bool remove(int spot);
     T* get(int spot) const;
     bool isEmpty() const;
     int size() const;
     void clear();
+    void sort();
     w_List<T>& operator=(const w_List<T> &list);
 
 protected:
@@ -115,8 +116,8 @@ int w_List<T>::add(int spot, T item)
             return -1;
         }
     }
-    int tmp = m_arr[spot];
-    int tmp2 = 0;
+    T tmp = m_arr[spot];
+    T tmp2;
     m_arr[spot] = item;
     for(int i = spot+1; i<m_size; i++)
     {
@@ -133,21 +134,48 @@ int w_List<T>::add(T item)
     return add(m_size, item);
 }
 template <typename T>
-T w_List<T>::remove(int spot)
+bool w_List<T>::remove(int spot)
 {
     if(spot >= m_size || spot<0)
     {
-        return NULL;
+        return false;
     }
-    T result = m_arr[spot];
+   // T result = m_arr[spot];
     for(int i = spot; i<m_size; i++)
     {
         m_arr[i] = m_arr[i+1];
     }
     m_size--;
-    return result;
+    return true;
 
 }
+
+template <typename T>
+void w_List<T>::sort()
+{
+    if(this->size()<2)
+    {
+        return;
+    }
+    bool sorted = false;
+    int tmp = 0;
+    while(!sorted)
+    {
+        sorted = true;
+        for(int i = 0; i<this->size()-1; i++)
+        {
+            if(m_arr[i] < m_arr[i+1])
+            {
+                tmp = m_arr[i];
+                m_arr[i] = m_arr[i+1];
+                m_arr[i+1] = tmp;
+                sorted = false;
+            }
+
+        }
+    }
+}
+
 template <typename T>
 T* w_List<T>::get (int spot) const
 {

@@ -7,6 +7,7 @@ w_String::w_String(w_List<char>& word)
    m_word.add(0);
 }
 
+
 w_String::w_String(const char* word, int size)
 {
     if(word == nullptr)

@@ -3,6 +3,7 @@
 #include <cstdio>
 #include "w_file.h"
 #include "test.h"
+#include "stats.h"
 
 void w_Test::eANDs(bool empty, int size, bool want_empty, int want_size)
 {
@@ -23,6 +24,34 @@ void w_Test::eANDs(bool empty, int size, bool want_empty, int want_size)
     {
         printf("\033[1;31mFALIURE (size)\033[0m\n");
     }
+}
+
+void w_Test::testStats()
+{
+    printf("TESTING STATS\n");
+    w_String test();
+    w_String name("data.txt",8);
+    w_File f(name);
+    Stats s(&f);
+    s.prepStats();
+    s.printStuff();
+    printf("end test\n");
+}
+
+void w_Test::testSort()
+{
+    printf("TESTING SORT\n");
+    w_List<int> l(10,20);
+    l.add(5);
+    l.add(9);
+    l.add(0);
+    l.add(14);
+    l.sort();
+    for(int i = 0; i<4; i++)
+    {
+        printf("%d,",*l.get(i));
+    }
+    printf("\n");
 }
 
 void w_Test::testFile2()

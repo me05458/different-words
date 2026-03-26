@@ -6,7 +6,8 @@ protected:
     w_List<char> m_word;
 public:
     w_String(w_List<char>& word);
-    w_String(const char *word, int size);
+    w_String();
+    w_String(const char *word="", int size=0);
     w_String(const char *word);
     ~w_String();
     bool operator==(const w_String &s);
