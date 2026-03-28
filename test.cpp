@@ -29,12 +29,20 @@ void w_Test::eANDs(bool empty, int size, bool want_empty, int want_size)
 void w_Test::testStats()
 {
     printf("TESTING STATS\n");
-    w_String test();
     w_String name("data.txt",8);
     w_File f(name);
     Stats s(&f);
-    s.prepStats();
     s.printStuff();
+    printf("end test\n");
+}
+
+void w_Test::testStats2()
+{
+    printf("TESTING STATS 2\n");
+    w_String name("data.txt",8);
+    w_File f(name);
+    Stats s(&f);
+    s.basicStats();
     printf("end test\n");
 }
 

@@ -8,6 +8,7 @@ public:
     static void testFile();
     static void testSort();
     static void testStats();
+    static void testStats2();
 
 private:
     static void eANDs(bool empty, int size, bool want_empty, int want_size);

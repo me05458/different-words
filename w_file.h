@@ -13,6 +13,7 @@ public:
     int update(long int pos, w_String word, int size, int duplicate);
     int insert(long int pos, w_String word, int size, int duplicate);
     int get(long int *pos, w_String *word, int *size, int *duplicate);
+    void clear();
 
 private:
     int shift(long int pos, long int shift);

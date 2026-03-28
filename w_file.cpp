@@ -123,6 +123,12 @@ int w_File::update(long int pos, w_String word, int size, int duplicate)
     return 0;
 
 }
+
+void w_File::clear()
+{
+    m_file.clear();
+}
+
 int w_File::insert(long int pos, w_String word, int size, int duplicate)
 {
     //printf("aaa- insert: %d, %s, %d, %d\n",pos, (char*)word, size, duplicate);

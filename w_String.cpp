@@ -50,6 +50,12 @@ void w_String::printString()
     }
 }
 
+w_String& w_String::operator=(const w_String &s)
+{
+    m_word = s.m_word;
+    return *this;
+}
+
 bool w_String::operator==(const w_String &s)
 {
     if(this->size() != s.size())

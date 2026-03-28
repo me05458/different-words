@@ -86,7 +86,7 @@ int w_List<T>::resize()
 template <typename T>
 w_List<T>& w_List<T>::operator=(const w_List<T> &list)
 {
-    free(m_arr);
+    delete m_arr;
     m_arrSize = list.m_arrSize;
     m_maxSize = list.m_maxSize;
     m_addSize = list.m_addSize;

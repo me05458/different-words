@@ -16,6 +16,7 @@ public:
     bool operator<=(const w_String &s);
     bool operator>=(const w_String &s);
     bool operator!=(const w_String &s);
+    w_String& operator=(const w_String &s);
     operator char*() const;
 
 
