@@ -167,7 +167,7 @@ int w_File::insert(long int pos, w_String word, int size, int duplicate)
 }
 int w_File::get(long int *pos, w_String *word, int *size, int *duplicate)
 {
-    //printf("aaa inside get: pos=%d\n", *pos);
+    printf("aaa inside get: pos=%d\n", *pos);
     m_file.seekp(0,m_file.end);
     long int endpos = m_file.tellp();
     if((*pos > endpos&&endpos!=-1)  ||* pos < 0)
@@ -176,15 +176,17 @@ int w_File::get(long int *pos, w_String *word, int *size, int *duplicate)
         return 1;
     }
     m_file.seekp(*pos, m_file.beg);
+    printf("aaa- get after seekp %d\n",m_file.tellp());
     if(m_file.bad())
     {
         perror("seek to end");
         return 2;
     }
+    printf("aaa- get 1\n");
     char* buff = new char[100];
     m_file.getline(buff, 100, ',');
 
-    //aaa if(m_file.bad())
+    printf("aaa- get 2\n");
     if(m_file.eof())
     {
         //printf("aaa- eof\n");

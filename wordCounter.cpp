@@ -38,7 +38,7 @@ int main() {
     while(true)
     {
         whilestart:
-        printf("\n");
+        //printf("\n");
         if(cin.peek()=='\n')
         {
             printf("Type word(s) separated by spaces or any of the following commands (CASE MATTERS):\n"
@@ -53,6 +53,7 @@ int main() {
             "-g get most common lenGth by first letter\n"
             "-f get most common First letter by length\n"
             "-w get most common duplicate Word per letter\n"
+            "-W get most common duplicate Word per length\n"
             );
             cin.get();
         }
@@ -80,6 +81,7 @@ int main() {
                     "-g get most common lenGth by first letter\n"
                     "-f get most common First letter by length\n"
                     "-w get most common duplicate Word per letter\n"
+                    "-W get most common duplicate Word per length\n"
                     );
                     break;
                 case 'q':
@@ -113,12 +115,19 @@ int main() {
                     break;
                 case 'g':
                     printf("length by letter\n");
+                    s.lengthPerLetter();
                     break;
                 case 'f':
                     printf("letter by length\n");
+                    s.letterPerLength();
                     break;
                 case 'w':
                     printf("duplicate per letter\n");
+                    s.dupPerLetter();
+                    break;
+                case 'W':
+                    printf("eee\n");
+                    s.dupPerLength();
                     break;
 
                 case '\n':  //weird case of "-\n"
@@ -211,9 +220,7 @@ int main() {
     }
 
 
-   // printf("at the very end\n");
-
-
+//    printf("at the very end\n");
 
     return 0;
 }

@@ -1,4 +1,5 @@
 #include "stats.h"
+#include <iostream>
 #define MAXDUP 10
 
 Stats::Stats(w_File *file)
@@ -10,13 +11,49 @@ Stats::Stats(w_File *file)
     m_num_by_lett = new long int[26];
     m_num_by_len = new long int[50];
     m_pos_of_lett = new long int[26];
+    m_dup_by_len = new dupStat*[50];
+    m_dup_by_lett = new dupStat*[26];
+    m_len_by_lett = new long int[26];
+    m_lett_by_len = new long int[50];
+    for(int i = 0; i<26; i++)
+    {
+        m_dup_by_lett[i]=new dupStat;
+    }
+    for(int i = 0; i<50; i++)
+    {
+        m_dup_by_len[i]=new dupStat;
+    }
 }
-
+/*
+void Stats::cleanLists()
+{
+    for(int i = 0; i<m_most_dup.size(); i++)
+    {
+        delete *m_most_dup.get(i);
+    }
+    for(int i = 0; i<m_dup_by_len.size(); i++)
+    {
+        delete *m_dup_by_len.get(i);
+    }
+    for(int i = 0; i<m_dup_by_lett.size(); i++)
+    {
+        delete *m_dup_by_lett.get(i);
+    }
+}
+*/
 Stats::~Stats()
 {
     for(int i = 0; i<m_most_dup.size(); i++)
     {
         delete *m_most_dup.get(i);
+    }
+    for(int i = 0; i<26; i++)
+    {
+        delete m_dup_by_lett[i];
+    }
+    for(int i = 0; i<50; i++)
+    {
+        delete m_dup_by_len[i];
     }
     //printf("Start destruct\n");
     delete m_num_by_lett;
@@ -24,7 +61,51 @@ Stats::~Stats()
     delete m_num_by_len;
     //printf("Part 2\n");
     delete m_pos_of_lett;
+    delete m_dup_by_len;
+    delete m_dup_by_lett;
+    delete m_len_by_lett;
+    delete m_lett_by_len;
    // printf("end destruct\n");
+}
+
+int Stats::mostCommonLen(char letter)
+{
+    int *mostLen = new int[50];
+    long int pos = 0;
+    char tmpLett = 'a'-1;
+    int tmpLen = 0;
+    int foo = 0;
+    w_String tmpWord("",0);
+    while(tmpLett<letter)
+    {
+        //printf("aaa- 1\n");
+        m_file->get(&pos,&tmpWord,&tmpLen,&foo);
+        tmpLett=tmpWord.charAt(0);
+    }
+    if(tmpLett>letter)
+    {
+        return 0;
+    }
+
+    while(tmpLett==letter)
+    {
+        //printf("aaa- 2\n");
+        m_file->get(&pos,&tmpWord,&tmpLen,&foo);
+        tmpLett=tmpWord.charAt(0);
+        mostLen[tmpLen]++;
+    }
+    int mostCommon = 0;
+    for(int i = 0; i<50; i++)
+    {
+        if(mostLen[i] > mostCommon)
+        {
+            printf("aaa- 1\n");
+
+            mostCommon = mostLen[i];
+        }
+    }
+    return mostCommon;
+
 }
 
 void Stats::basicStats()
@@ -54,13 +135,13 @@ void Stats::basicStats()
         "Most duplicated word: ",m_word_num);
     if((m_most_dup.size())==0)
     {
-        printf ("none");
+        printf ("none\n");
     }
     else
     {
-        (*m_most_dup.get(0))->m_first_word.printString();
+        printf("%s\n",(char*)(*m_most_dup.get(0))->m_first_word);
     }
-    printf("\nMost common first letter: %c\n",mostLett);
+    printf("Most common first letter: %c\n",mostLett);
     printf("Most common word length: %d\n",mostLen);
 }
 
@@ -155,9 +236,14 @@ void Stats::topDup()
     }
     for(int i = 0; i<m_most_dup.size(); i++)
     {
-        printf("%d: ",i+1);
-        (*m_most_dup.get(i))->m_first_word.printString();
-        printf("\n");
+        if(i<m_most_dup.size())
+        {
+            printf("%d: %s\n",i+1,(char*)(*m_most_dup.get(i))->m_first_word);
+        }
+        else
+        {
+            printf("%d: N/A",i+1);
+        }
     }
 }
 void Stats::topLetters()
@@ -236,9 +322,44 @@ void Stats::letterGraph()
         }
     }
 }
-void lengthPerLetter();
-void letterPerLength();
-void dupPerLength();
+void Stats::lengthPerLetter()
+{
+    int tmp = 0;
+    for(int i = 0; i<26; i++)
+    {
+        tmp = mostCommonLen(i+'a');
+        if(tmp != 0 )
+        {
+            printf("%c: %d\n",i+'a',tmp);
+        }
+    }
+}
+void Stats::letterPerLength()
+{
+
+}
+void Stats::dupPerLength()
+{
+    prepStats();
+    for(int i = 0; i<50; i++)
+    {
+        if(m_dup_by_len[i]->m_dup != 0)
+        {
+            printf("%d: %s\n",i,(char*)m_dup_by_len[i]->m_first_word);
+        }
+    }
+}
+void Stats::dupPerLetter()
+{
+    prepStats();
+    for(int i = 0; i<26; i++)
+    {
+        if(m_dup_by_lett[i]->m_dup != 0)
+        {
+            printf("%c: %s\n",i+'a',(char*)m_dup_by_lett[i]->m_first_word);
+        }
+    }
+}
 
 void Stats::printStuff()
 {
@@ -274,6 +395,20 @@ void Stats::printStuff()
 
 void Stats::prepStats()
 {
+    //printf("aaa- 0\n");
+    for(int i = 0; i<26; i++)
+    {
+        delete m_dup_by_lett[i];
+        m_dup_by_lett[i]=new dupStat;
+    }
+    for(int i = 0; i<50; i++)
+    {
+        delete m_dup_by_len[i];
+        m_dup_by_len[i]=new dupStat;
+    }
+    m_most_dup.clear();
+    //printf("aaa- 1\n");
+    m_word_num = 0;
     if(m_file == nullptr)
         return;
 
@@ -289,11 +424,15 @@ void Stats::prepStats()
     w_String readWord("",0);
     int readLen = 0;
     int readDup = 0;
+    //printf("aaa- 2\n");
     while(!m_file->eof())
     {
         whilestart:
+            //printf("aaa- 2.1\n");
 
         m_file->get(&currentpos,&readWord,&readLen,&readDup);
+        //printf("aaa- 2.2\n");
+
         if(m_file->eof())
         {
             break;
@@ -308,44 +447,47 @@ void Stats::prepStats()
         m_num_by_lett[index]++;
         m_num_by_len[readLen]++;
 
+        //printf("aaa- 3\n");
+
         if(readDup>=2)
         {
             dupStat* tmp = new dupStat();
             tmp->m_dup = readDup;
-            tmp->m_num = 1;
             tmp->m_first_word = readWord;
-            if(m_most_dup.isEmpty())
+            int i = 0;
+            for(i; i<m_most_dup.size(); i++)
             {
-                m_most_dup.add(tmp);
+                if(readDup > (*m_most_dup.get(i))->m_dup)
+                {
+                    break;
+                }
             }
-            else
+            if(i < MAXDUP)
             {
-                int i = 0;
-                for(i; i<m_most_dup.size(); i++)
+                if(m_most_dup.size() == MAXDUP)
                 {
-                    if(readDup == (*m_most_dup.get(i))->m_dup)
-                    {
-                        (*m_most_dup.get(i))->m_num++;
-                        delete tmp;
-                        goto whilestart;
-                    }
-                    if(readDup > (*m_most_dup.get(i))->m_dup)
-                    {
-                        if(m_most_dup.size() == MAXDUP)
-                        {
-                            delete (*m_most_dup.get(MAXDUP-1));
-                            m_most_dup.remove(MAXDUP-1);
-                        }
-                        m_most_dup.add(i, tmp);
-                        goto whilestart;
-                    }
+                    delete (*m_most_dup.get(MAXDUP-1));
+                    m_most_dup.remove(MAXDUP-1);
                 }
-                if(i < MAXDUP)
-                {
-                    m_most_dup.add(i, tmp);
-                }
+                m_most_dup.add(i, tmp);
+            }
+
+            //--------
+            //printf("aaa- 4\n");
+
+            int pos = readWord.charAt(0)-'a';
+            if(m_dup_by_lett[pos]->m_dup < readDup)
+            {
+                *m_dup_by_lett[pos] = *tmp;
+            }
+            //printf("aaa- 5\n");
+
+            pos = readLen;
+            if(m_dup_by_len[pos]->m_dup < readDup)
+            {
+                *m_dup_by_len[pos] = *tmp;
             }
         }
     }
-    m_file->clear();
+        m_file->clear();
 }
