@@ -13,33 +13,23 @@ using namespace std;
 
 
 int main() {
-
-  //  w_Test::testStats();
-    //return 0;
-/*    fstream vocabulary{"data.txt", ios::in | ios::out};
-    if(!vocabulary.is_open())
-    {
-        cout<<"File opening error occured"<<endl;
-        return 0;
-    }*/
-    w_String filename("data.txt",8);
-    w_File dataArea(filename);
-    Stats s(&dataArea);
+    w_String filename("data.txt",8); //this is where the file is defined
+    w_File dataArea(filename); //file is created
+    Stats s(&dataArea); //statistics handler is created
 
     printf("enter word(s) separated by spaces\n"
-        "or enter command (ex. '-help')\n");
+        "or enter command (ex. '-help')\n"); //initial instruction
 
-    char a_char = 0;
-    bool keepgo = true;
-    bool allgood = true;
-    bool reporttime = false;
-    char* buff = new char[100];
+    char a_char = 0; //this is the character read in as words are being read
+    bool keepgo = true; //continue with loop?
+    bool allgood = true; //need to print "all good" (no duplicates)
+    bool reporttime = false; //need to state if all good or not
+    char* buff = new char[100]; //buffer for reading characters
 
-    while(true)
+    while(true) //runs forever
     {
-        whilestart:
-        //printf("\n");
-        if(cin.peek()=='\n')
+        whilestart: //start of while, used by gotos
+        if(cin.peek()=='\n') //show help prompt if user pressed enter
         {
             printf("Type word(s) separated by spaces or any of the following commands (CASE MATTERS):\n"
             "-h Help (this list)\n"
@@ -55,20 +45,21 @@ int main() {
             "-w get most common duplicate Word per letter\n"
             "-W get most common duplicate Word per length\n"
             );
-            cin.get();
+            cin.get(); //get rid of the \n that's in cin or it will loop forever
         }
-        else if(cin.peek()=='-')
+        else if(cin.peek()=='-') //a command is written
         {
-            if(reporttime && allgood)
+
+            cin.get(); //get rid of the '-'
+            if(reporttime && allgood && cin.peek() != 'q') //if we've been waiting to report that it's good, do so now
             {
                 printf("All good!\n");
             }
-            allgood = true;
+            allgood = true; //set them back to initial values
             reporttime = false;
-            cin.get();
-            switch(cin.get())
+            switch(cin.get()) //switch for the next character
             {
-                case 'h':
+                case 'h': //help
                     printf("Type word(s) separated by spaces or any of the following commands (CASE MATTERS):\n"
                     "-h Help (this list)\n"
                     "-q Quit\n"
@@ -79,148 +70,132 @@ int main() {
                     "-t get 5 most common first leTters\n"
                     "-T get graph of words per leTter\n"
                     "-g get most common lenGth by first letter\n"
-                    "-f get most common First letter by length\n"
                     "-w get most common duplicate Word per letter\n"
                     "-W get most common duplicate Word per length\n"
                     );
                     break;
-                case 'q':
-                    printf("need to go! bye!\n");
-                    keepgo = false;
+                case 'q': //quit
+                    printf("Good luck with your words!\n");
+                    keepgo = false; //time to stop going
                     break;
-                case 'd':
+                case 'd': //most duplicated
                     printf("Most duplicated words:\n");
                     s.topDup();
                     break;
-                    /* other commands here*/
-                case 's':
+                case 's': //quick stats
                     printf("Fast stats:\n");
                     s.basicStats();
                     break;
-                case 'l':
+                case 'l': //most common word length
                     printf("Most common word lengths:\n");
                     s.topLengths();
                     break;
-                case 'L':
+                case 'L': //graph of lengths
                     printf("Graph of lengths:\n");
                     s.lengthGraph();
                     break;
-                case 't':
+                case 't': //most common letters
                     printf("Most common letters:\n");
                     s.topLetters();
                     break;
-                case 'T':
+                case 'T': //graph of letters
                     printf("Graph of letters:\n");
                     s.letterGraph();
                     break;
-                case 'g':
-                    printf("length by letter\n");
+                case 'g': //length by letter
+                    printf("Length by letter:\n");
                     s.lengthPerLetter();
                     break;
-                case 'f':
-                    printf("letter by length\n");
-                    s.letterPerLength();
-                    break;
-                case 'w':
-                    printf("duplicate per letter\n");
+                case 'w': //duplicate by letter
+                    printf("Duplicate per letter:\n");
                     s.dupPerLetter();
                     break;
-                case 'W':
-                    printf("eee\n");
+                case 'W': //duplicate by length
+                    printf("Duplicate per length:\n");
                     s.dupPerLength();
                     break;
 
                 case '\n':  //weird case of "-\n"
-                        cin.putback('\n');
+                        cin.putback('\n'); //we need cin to have a '\n' now, so put it back
+                        //proceed to default
                 default:
-                        printf("uncknown command; will ignore\n");
+                        printf("uncknown command; will ignore\n"); //warn
                         break;
             }
-            if(!keepgo)
+            if(!keepgo) //if we don't want to keep going anymore
             {
-                break;
+                break; //break the while
             }
-            cin.ignore(100,'\n');
+            cin.ignore(100,'\n'); //at end of command, ignore the rest of anything written until next newline
         }
-        else
+        else //words!
         {
-            w_String entry("",0);
-            a_char = cin.get();
-            while(a_char!= ' ' && a_char!='\n')
+            w_String entry("",0); //this will be the word
+            a_char = cin.get(); //read the first character of the word
+            while(a_char!= ' ' && a_char!='\n') //keep going while in the word
             {
-                if(a_char>='a' && a_char<='z')
+                if(a_char>='a' && a_char<='z') //valid character
                 {
-                    entry.append(a_char);
+                    entry.append(a_char); //add the letter to the word
                 }
-                else if(a_char>='A' && a_char<='Z')
+                else if(a_char>='A' && a_char<='Z') //only lowercase are allowed
                 {
                     printf("use all lowercase!\n");
                     cin.ignore(100,'\n');
-                    goto whilestart;
+                    goto whilestart; //stop collecting words, repeat while
                 }
-                else
+                else //not a letter was used
                 {
                     printf("invalid word; will ignore\n");
                     cin.ignore(100,'\n');
-                    goto whilestart;
+                    goto whilestart; //stop collecting words, repeat while
                 }
-                a_char=cin.get();
+                a_char=cin.get(); //get the next letter
             }
-            long int foundpos = 0;
-            int oldduplicate = -1;
-            //printf("pre find\n");
-            bool foundWord = dataArea.findWord(entry,&foundpos);
-            //printf("post find\n");
-            long int tmpfoundpos = foundpos;
-            if(foundWord)
+            long int foundpos = 0; //place where this word exists or should go
+            int oldduplicate = -1; //amount word was duplicated before this one showed up
+            bool foundWord = dataArea.findWord(entry,&foundpos); //find word, see if it exists or not
+            long int tmpfoundpos = foundpos; //temporary position to use with gets that does not mess up foundpos
+            if(foundWord) //duplicate
             {
-                printf("Duplicate word: ");
-                entry.printString();
-                printf("\n");
+                printf("Duplicate word: %s\n",(char*)entry); //display it as duplicate
 
-                allgood = false;
+                allgood = false; //not all not duplicate
 
+                //get the current entry from the file. Oldduplicate is used twice because we don't care about length for this, so might as well reuse it.
                 int a = dataArea.get(&tmpfoundpos, &entry, &oldduplicate,&oldduplicate);
-                if(a!=0)
+                if(a!=0) //check for exit codes of get
                 {
                     printf("Get error occured\n");
-                    goto whilestart;
+                    goto whilestart; //stop trying to do things here
                 }
 
-                dataArea.update(foundpos,entry,entry.size(),oldduplicate+1);
+                dataArea.update(foundpos,entry,entry.size(),oldduplicate+1); //update it with the duplicate number being one mroe
             }
-            else
+            else //not duplicate
             {
-                reporttime = true;
-             //   printf("NOT duplicate word: ");
-               // entry.printString();
-                //printf("\n");
-                if(foundpos == -1)
+                reporttime = true; //in the case that a command comes next, report that all's good
+                if(foundpos == -1) //this means file has nothing in it
                 {
-                    //printf("wow -1\n");
-                    dataArea.insert(0,entry,entry.size(),1);
+                    dataArea.insert(0,entry,entry.size(),1); //write to 0th position
                 }
-                else
+                else //otherwise
                 {
-                    dataArea.insert(foundpos,entry,entry.size(),1);
+                    dataArea.insert(foundpos,entry,entry.size(),1); //just write at foundposition to insert entry
                 }
 
             }
 
-            if(a_char == '\n')
+            if(a_char == '\n') //at end of line of words
             {
-                if(allgood)
+                if(allgood) //if no duplicates observed print so
                 {
                     printf("All good!\n");
                 }
-                allgood = true;
+                allgood = true; //back to original value
             }
 
         }
     }
-
-
-//    printf("at the very end\n");
-
     return 0;
 }

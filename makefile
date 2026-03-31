@@ -3,7 +3,6 @@ OBJS = \
        w_List.o\
        w_String.o\
        wordCounter.o\
-       test.o\
        w_file.o\
        stats.o\
 
